@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js'></script>
+
+    <style>
+
+        body {
+            font-family: sans-serif;
+        }
+
+        ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            list-style-type: none;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            border-radius: 1rem;
+            color: white;
+            background-color: teal;
+            height: 8rem;
+            width: 14rem;
+            padding: 1rem;
+            margin: 2rem;
+        }
+
+        .productName{
+            
+            text-align: center;
+            font-weight: bolder;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+
+        }
+
+        .productDescription{
+            color: white
+        }
+
+        .productPrice{
+            text-align: center;
+
+        }
+
+    </style>
+  </head>
+  <body>
+    <h1>Amce Express w/ JSON</h1>
+    <div id='root'></div>
+    <script type='text/babel'>
+        const {Component} = React
+        const {render} = ReactDOM
+        // const {} = ReactRouterDOM
+
+        class App extends Component{
+            constructor(){
+                super();
+                this.state={
+                    products: []
+                }
+            }
+
+            async componentDidMount(){
+                const products = (await axios.get('/api/products')).data
+                this.setState({products: products})
+            }
+
+            render(){
+                const {products}=this.state
+                return(
+                    <ul>
+                        {products.map(product=> {
+                            return(
+                                <li key={product.id}>
+                                    <span className='productName'>{product.name.toUpperCase()}</span>
+                                    <span className='productDescription'>{product.description}</span>
+                                    <span className='productPrice'>{`$${product.suggestedPrice.toFixed(2)}`}</span>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                )
+            }
+        }
+
+        render(<App />, document.querySelector('#root'));
+    </script>
+  </body>
+</html>
